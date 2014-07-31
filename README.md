@@ -17,6 +17,8 @@ This is only available through npm, it should work with browserify or webpack.
 
 Also install react if you haven't already (of course).
 
+### Usage
+
 Here's a simple example:
 
     render: function(){
