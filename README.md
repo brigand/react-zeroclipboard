@@ -9,13 +9,23 @@ which is being abstracted from you.  This library...
 *   figures out which element was clicked
 *   allows you to declare text/html/rtf, or pass a function which returns it dynamically
 
+### Install
+
+This is only available through npm, it should work with browserify or webpack.  
+
+   npm install --save react-zeroclipboard
+
+Also install react if you haven't already (of course).
+
 Here's a simple example:
 
     render: function(){
         return (
             <div>
                 <p>Click the button to copy some text</p>
-                <ReactZeroClipboard text="Hello, world!"><button>Copy</button></ReactZeroClipboard>
+                <ReactZeroClipboard text="Hello, world!">
+                    <button>Copy</button>
+                </ReactZeroClipboard>
             </div>
         )
     }
