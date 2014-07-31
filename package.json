@@ -1,0 +1,18 @@
+{
+  "name": "react-zeroclipboard",
+  "version": "0.1.0",
+  "description": "react component for zeroclipboard",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "npm run browserify",
+    "browserify": "browserify -d -t reactify docs.js -o docs-bundle.js"
+  },
+  "author": "Frankie Bagnardi <f.bagnardi@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^5.9.1",
+    "react": "^0.11.1",
+    "reactify": "^0.14.0"
+  }
+}
