@@ -1,8 +1,13 @@
 {
   "name": "react-zeroclipboard",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "react component for zeroclipboard",
   "main": "index.js",
+  "keywords": [
+    "react",
+    "clipboard",
+    "react-component"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "npm run browserify",
