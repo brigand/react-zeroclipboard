@@ -7,7 +7,32 @@ var waitingForScriptToLoad = [];
 
 // these are the active elements using ZeroClipboardComponent
 // each item in the array should be a [element, callback] pair
-var copyEventHandlers = [];
+var eventHandlers = {
+    copy: [],
+    afterCopy: [],
+    error: []
+};
+
+// add a listener, and returns a remover
+var addZeroListener = function(event, el, fn){
+    eventHandlers[event].push([el, fn]);
+    return function(){
+        var handlers = eventHandlers[event];
+        for (var i=0; i<handlers.length; i++) {
+            if (handlers[i][0] === el) {
+                // mutate the array to remove the listener
+                handlers.splice(i, 1);
+                return;
+            }
+        }
+    };
+};
+
+var propToEvent = {
+    onCopy: 'copy',
+    onAfterCopy: 'afterCopy',
+    onError: 'error'
+};
 
 // asynchronusly load ZeroClipboard from cdnjs
 // it should automatically discover the SWF location using some clever hacks :-)
@@ -23,21 +48,29 @@ loadScript('//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard.j
     delete global.ZeroClipboard;
 
     client = new ZeroClipboard();
-    client.on('copy', function(){
-        var activeElement = ZeroClipboard.activeElement();
 
-        // find an event handler for this element
-        // we use some so we don't continue looking after a match is found
-        copyEventHandlers.some(function(xs){
-            var element = xs[0], callback = xs[1];
-            if (element === activeElement) {
-                callback();
-                return true;
-            }
+    var handleEvent = function(eventName){
+        client.on(eventName, function(event){
+            var activeElement = ZeroClipboard.activeElement();
+
+            // find an event handler for this element
+            // we use some so we don't continue looking after a match is found
+            eventHandlers[eventName].some(function(xs){
+                var element = xs[0], callback = xs[1];
+                if (element === activeElement) {
+                    callback(event);
+                    return true;
+                }
+            });
         });
-    });
+    };
+
+    for (var eventName in eventHandlers) {
+        handleEvent(eventName);
+    }
 
     // call the callbacks when ZeroClipboard is ready
+    // these are set in ReactZeroClipboard::componentDidMount
     waitingForScriptToLoad.forEach(function(callback){
         callback();
     });
@@ -50,6 +83,10 @@ loadScript('//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard.j
 //   getText={(Void -> String)}
 //   getHtml={(Void -> String)}
 //   getRichText={(Void -> String)}
+//
+//   onCopy={(Event -> Void)}
+//   onAfterCopy={(Event -> Void)}
+//   onErrorCopy={(Error -> Void)}
 // />
 var ReactZeroClipboard = react.createClass({
     ready: function(cb){
@@ -63,17 +100,24 @@ var ReactZeroClipboard = react.createClass({
     },
     componentDidMount: function(){
         // wait for ZeroClipboard to be ready, and then bind it to our element
+        this.eventRemovers = [];
         this.ready(function(){
             var el = this.getDOMNode();
             client.clip(el);
 
-            if (this.props.onAfterCopy) {
-                client.on('afterCopy', this.props.onAfterCopy);
+            // translate our props to ZeroClipboard events, and add them to
+            // our listeners
+            for (var prop in this.props) {
+                var eventName = propToEvent[prop];
+
+                if (eventName && typeof this.props[prop] === "function") {
+                    var remover = addZeroListener(eventName, el, this.props[prop]);
+                    this.eventRemovers.push(remover);
+                }
             }
 
-            // save our handler object so we can do a === check upon removal
-            this.copyEventHandlerObject = [el, this.handleCopy];
-            copyEventHandlers.push(this.copyEventHandlerObject);
+            var remover = addZeroListener("copy", el, this.handleCopy);
+            this.eventRemovers.push(remover);
         });
     },
     componentWillUnmount: function(){
@@ -81,13 +125,8 @@ var ReactZeroClipboard = react.createClass({
             client.unclip(this.getDOMNode());
         }
 
-        // remove our event listener from the array
-        for (var i=0; i<copyEventHandlers.length; i++) {
-            if (copyEventHandlers[i] === this.copyEventHandlerObject) {
-                copyEventHandlers.splice(i, 1);
-                return;
-            }
-        }
+        // remove our event listener
+        this.eventRemovers.forEach(function(fn){ fn(); });
     },
     handleCopy: function(){
         var p = this.props;
