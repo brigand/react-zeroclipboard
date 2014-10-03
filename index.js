@@ -67,6 +67,10 @@ var ReactZeroClipboard = react.createClass({
             var el = this.getDOMNode();
             client.clip(el);
 
+            if (this.props.onAfterCopy) {
+                client.on('afterCopy', this.props.onAfterCopy);
+            }
+
             // save our handler object so we can do a === check upon removal
             this.copyEventHandlerObject = [el, this.handleCopy];
             copyEventHandlers.push(this.copyEventHandlerObject);
