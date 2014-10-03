@@ -57,5 +57,49 @@ var multiTypeDemo = React.createClass({
         );
     }
 });
+
+
+
 React.renderComponent(multiTypeDemo(), document.getElementById("list-demo-target"));
 
+var eventsDemo = React.createClass({
+    getInitialState: function(){
+        return {
+            logs: [],
+        };
+    },
+    getLogger: function(eventName){
+        return function(event){
+            var logs = this.state.logs.concat([{name: eventName, event: event}]);
+            this.setState({logs: logs});
+        }.bind(this);
+    },
+    render: function(){
+        var styl = {
+            padding: "10px", 
+            border: "1px solid #eee",
+            borderRadius: "7px"
+        };
+        
+        return (
+        <div>
+            <div><ReactZeroClipboard text="example text" 
+                onCopy={this.getLogger("copy")}
+                onAfterCopy={this.getLogger("afterCopy")}
+                error={this.getLogger("error")}>Click To Copy</ReactZeroClipboard></div>
+            <div style={styl}><ol>{this.state.logs.map(function(log, i){
+                var out = {};
+                
+                for (var key in log.event) {
+                    out[key] = String(log.event[key]);
+                }
+
+
+                return <li key={i}>{log.name}: <pre>{JSON.stringify(out, null, 4)}</pre></li>
+            })}</ol></div>
+        </div>
+        );
+    }
+});
+
+React.renderComponent(eventsDemo(), document.getElementById("events-demo-target"));

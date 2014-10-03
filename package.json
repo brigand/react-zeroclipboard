@@ -1,13 +1,20 @@
 {
   "name": "react-zeroclipboard",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "react component for zeroclipboard",
   "main": "index.js",
+  "keywords": [
+    "react",
+    "clipboard",
+    "react-component"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "npm run browserify",
     "browserify": "browserify -d -t reactify docs.js -o docs-bundle.js"
   },
+  "repository": "https://github.com/brigand/react-zeroclipboard.git",
+  "homepage": "http://brigand.github.io/react-zeroclipboard/",
   "author": "Frankie Bagnardi <f.bagnardi@gmail.com>",
   "license": "MIT",
   "devDependencies": {

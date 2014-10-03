@@ -36,14 +36,22 @@
                 the application you're pasting into decides which one to use.  Methods have higher priority than
                 the literal strings, if for some reason you pass both.</p>
 
-                <pre><code>// &lt;ReactZeroClipboard 
-//   text="text to copy"
-//   html="&lt;b>html to copy&lt;/b>"
-//   richText="{\\rtf1\\ansi\n{\\b rich text to copy}}"
-//   getText={(Void -> String)}
-//   getHtml={(Void -> String)}
-//   getRichText={(Void -> String)}
-// />
+                <p>The events can be used to show a success message by changing state, focusing an input, or
+                anything you want to happen.  Generally you should use <code>onAfterCopy</code>.  The docs don't specify
+                when the error event occurs, or what can cause it.</p>
+
+                <pre><code> &lt;ReactZeroClipboard 
+   text="text to copy"
+   html="&lt;b>html to copy&lt;/b>"
+   richText="{\\rtf1\\ansi\n{\\b rich text to copy}}"
+   getText={(Void -> String)}
+   getHtml={(Void -> String)}
+   getRichText={(Void -> String)}
+
+   onCopy={(Event -> Void)}
+   onAfterCopy={(Event -> Void)}
+   onErrorCopy={(Error -> Void)}
+ />
 </code></pre>
              <p>Here's an example where we copy the current url to the clipboard, both in plain text and a html anchor</p>
              <p>If the user pastes this in their address bar they get the url, and if they paste it in gmail they get a nice link.</p>
@@ -79,6 +87,8 @@
             <div id="list-demo-target"></div>
             </div>
 
+            <p>This is simply a button which logs the events as they occur.</p>
+            <div id="events-demo-target"></div>
         </div>
     </div>
 </div>
