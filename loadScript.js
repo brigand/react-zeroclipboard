@@ -2,7 +2,7 @@ var loading = {};
 
 module.exports = function loadScript(src, callback){
     // we don't want duplicate script elements
-    // so we use an array of callbacks instead of 
+    // so we use an array of callbacks instead of
     // multiple onload handlers
     if (loading[src]) {
         loading[src].push(callback);
@@ -23,7 +23,7 @@ module.exports = function loadScript(src, callback){
 
     script.onerror = function(error){
         loading[src].forEach(function(cb){
-            cb(err)
+            cb(error)
         });
         delete loading[src];
     };
