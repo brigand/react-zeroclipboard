@@ -36,7 +36,7 @@ var propToEvent = {
 
 // asynchronusly load ZeroClipboard from cdnjs
 // it should automatically discover the SWF location using some clever hacks :-)
-loadScript('//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard.js', function(error){
+var handleZeroClipLoad = function(error){
     if (error) {
         console.error("Couldn't load zeroclipboard from CDNJS.  Copy will not work.  "
             + "Check your Content-Security-Policy.");
@@ -75,6 +75,13 @@ loadScript('//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard.j
         callback();
     });
 });
+
+if (global.ZeroClipboard) {
+    handleZeroClipLoad(null);
+}
+else {
+    loadScript('//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard.js', handleZeroClipLoad);
+}
 
 // <ReactZeroClipboard 
 //   text="text to copy"
