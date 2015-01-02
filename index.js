@@ -151,7 +151,11 @@ var ReactZeroClipboard = react.createClass({
         text     != null && client.setText(text);
     },
     render: function(){
-        return react.DOM.div({className: this.props.className || ''}, this.props.children);
+        var span = react.createFactory ? react.createFactory('span') : react.DOM.span;
+        return span({
+            className: this.props.className || '',
+            style: {cursor: "pointer"}
+        }, this.props.children);
     }
 });
 module.exports = ReactZeroClipboard;
