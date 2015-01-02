@@ -74,7 +74,7 @@ var handleZeroClipLoad = function(error){
     waitingForScriptToLoad.forEach(function(callback){
         callback();
     });
-});
+};
 
 if (global.ZeroClipboard) {
     handleZeroClipLoad(null);
