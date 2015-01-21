@@ -1,6 +1,8 @@
 var loading = {};
 
 module.exports = function loadScript(src, callback){
+    if (typeof(window) === 'undefined') return;
+    
     // we don't want duplicate script elements
     // so we use an array of callbacks instead of
     // multiple onload handlers
