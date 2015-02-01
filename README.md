@@ -37,14 +37,20 @@ The full api offers more flexibility.  If you provide e.g. html and text, they'l
 the application you're pasting into decides which one to use.  Methods have higher priority than
 the literal strings, if for some reason you pass both.
 
-    <ReactZeroClipboard 
-      text="text to copy"
-      html="<b>html to copy</b>"
-      richText="{\\rtf1\\ansi\n{\\b rich text to copy}}"
-      getText={(Void -> String)}
-      getHtml={(Void -> String)}
-      getRichText={(Void -> String)}
-    />
+```js
+ <ReactZeroClipboard 
+   text="text to copy"
+   html="<b>html to copy</b>"
+   richText="{\\rtf1\\ansi\n{\\b rich text to copy}}"
+   getText={(Void -> String)}
+   getHtml={(Void -> String)}
+   getRichText={(Void -> String)}
+
+   onCopy={(Event -> Void)}
+   onAfterCopy={(Event -> Void)}
+   onErrorCopy={(Error -> Void)}
+ />
+```
 
 Here's an example where we copy the current url to the clipboard, both in plain text and a html anchor
 
