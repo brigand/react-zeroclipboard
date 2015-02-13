@@ -94,6 +94,8 @@ else {
 //   onCopy={(Event -> Void)}
 //   onAfterCopy={(Event -> Void)}
 //   onErrorCopy={(Error -> Void)}
+//
+//   onReady={(Event -> Void)}
 // />
 var ReactZeroClipboard = react.createClass({
     ready: function(cb){
@@ -125,6 +127,7 @@ var ReactZeroClipboard = react.createClass({
 
             var remover = addZeroListener("copy", el, this.handleCopy);
             this.eventRemovers.push(remover);
+            if (this.props.onReady) this.props.onReady();
         });
     },
     componentWillUnmount: function(){
