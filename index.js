@@ -125,6 +125,7 @@ var ReactZeroClipboard = react.createClass({
 
             var remover = addZeroListener("copy", el, this.handleCopy);
             this.eventRemovers.push(remover);
+            if (this.onReady) this.onReady();
         });
     },
     componentWillUnmount: function(){
