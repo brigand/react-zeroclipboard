@@ -86,12 +86,19 @@ var eventsDemo = React.createClass({
             <div><ReactZeroClipboard text="example text" 
                 onCopy={this.getLogger("copy")}
                 onAfterCopy={this.getLogger("afterCopy")}
-                error={this.getLogger("error")}>Click To Copy</ReactZeroClipboard></div>
+                onError={this.getLogger("error")}
+                onReady={this.getLogger("ready")}
+                >Click To Copy</ReactZeroClipboard></div>
             <div style={styl}><ol>{this.state.logs.map(function(log, i){
                 var out = {};
                 
                 for (var key in log.event) {
-                    out[key] = String(log.event[key]);
+                    if (log.event[key] instanceof window.Element) {
+                        out[key] = String(log.event[key]);
+                    }
+                    else {
+                        out[key] = log.event[key];
+                    }
                 }
 
 
