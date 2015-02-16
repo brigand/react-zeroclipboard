@@ -69,10 +69,12 @@ var handleZeroClipLoad = function(error){
         handleEvent(eventName);
     }
 
-    // call the callbacks when ZeroClipboard is ready
-    // these are set in ReactZeroClipboard::componentDidMount
-    waitingForScriptToLoad.forEach(function(callback){
-        callback();
+    client.on("ready", function() {
+        // call the callbacks when ZeroClipboard is ready
+        // these are set in ReactZeroClipboard::componentDidMount
+        waitingForScriptToLoad.forEach(function(callback){
+            callback();
+        });
     });
 };
 
@@ -83,7 +85,7 @@ else {
     loadScript('//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard.js', handleZeroClipLoad);
 }
 
-// <ReactZeroClipboard 
+// <ReactZeroClipboard
 //   text="text to copy"
 //   html="<b>html to copy</b>"
 //   richText="{\\rtf1\\ansi\n{\\b rich text to copy}}"
@@ -145,7 +147,7 @@ var ReactZeroClipboard = react.createClass({
         var text = result(p.getText || p.text);
         var html = result(p.getHtml || p.html);
         var richText = result(p.getRichText || p.richText);
-        
+
         // give ourselves a fresh slate and then set
         // any provided data types
         client.clearData();
