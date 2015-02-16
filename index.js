@@ -10,7 +10,8 @@ var waitingForScriptToLoad = [];
 var eventHandlers = {
     copy: [],
     afterCopy: [],
-    error: []
+    error: [],
+    ready: []
 };
 
 // add a listener, and returns a remover
@@ -31,8 +32,11 @@ var addZeroListener = function(event, el, fn){
 var propToEvent = {
     onCopy: 'copy',
     onAfterCopy: 'afterCopy',
-    onError: 'error'
+    onError: 'error',
+    onReady: 'ready'
 };
+
+var readyEventHasHappened = false;
 
 // asynchronusly load ZeroClipboard from cdnjs
 // it should automatically discover the SWF location using some clever hacks :-)
@@ -51,6 +55,16 @@ var handleZeroClipLoad = function(error){
 
     var handleEvent = function(eventName){
         client.on(eventName, function(event){
+            // ready has no active element
+            if (eventName === 'ready') {
+                eventHandlers[eventName].forEach(function(xs){
+                    xs[1](event);
+                });
+
+                readyEventHasHappened = true;
+                return;
+            }
+
             var activeElement = ZeroClipboard.activeElement();
 
             // find an event handler for this element
@@ -107,6 +121,11 @@ var ReactZeroClipboard = react.createClass({
             waitingForScriptToLoad.push(cb.bind(this));
         }
     },
+    componentWillMount: function(){
+        if (readyEventHasHappened && this.props.onReady) {
+            this.props.onReady();
+        }
+    },
     componentDidMount: function(){
         // wait for ZeroClipboard to be ready, and then bind it to our element
         this.eventRemovers = [];
@@ -127,7 +146,6 @@ var ReactZeroClipboard = react.createClass({
 
             var remover = addZeroListener("copy", el, this.handleCopy);
             this.eventRemovers.push(remover);
-            if (this.props.onReady) this.props.onReady();
         });
     },
     componentWillUnmount: function(){
