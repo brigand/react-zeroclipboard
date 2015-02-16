@@ -51,7 +51,7 @@ the literal strings, if for some reason you pass both.
    onAfterCopy={(Event -> Void)}
    onErrorCopy={(Error -> Void)}
 
-   onReady={(Error -> Void)}
+   onReady={(Event -> Void)}
 />
 ```
 
