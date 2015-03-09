@@ -21,5 +21,11 @@
     "browserify": "^5.9.1",
     "react": "^0.11.1",
     "reactify": "^0.14.0"
+  },
+  "browserify": {
+    "transform": ["envify"]
+  },
+  "dependencies": {
+    "envify": "^3.3.0"
   }
 }
