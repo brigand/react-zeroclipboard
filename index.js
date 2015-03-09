@@ -94,7 +94,10 @@ if (global.ZeroClipboard) {
     handleZeroClipLoad(null);
 }
 else {
-    loadScript('//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard.js', handleZeroClipLoad);
+    // load zeroclipboard from CDN
+    // in production we want the minified version
+    var ZERO_CLIPBOARD_SOURCE = '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard';
+    loadScript(process.env.NODE_ENV === 'production' ? ZERO_CLIPBOARD_SOURCE + '.min.js' : ZERO_CLIPBOARD_SOURCE + '.js', handleZeroClipLoad);
 }
 
 // <ReactZeroClipboard 
