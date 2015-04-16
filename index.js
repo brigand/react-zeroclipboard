@@ -133,7 +133,7 @@ var ReactZeroClipboard = react.createClass({
         // wait for ZeroClipboard to be ready, and then bind it to our element
         this.eventRemovers = [];
         this.ready(function(){
-            var el = this.getDOMNode();
+            var el = react.findDOMNode(this);
             client.clip(el);
 
             // translate our props to ZeroClipboard events, and add them to
@@ -175,11 +175,7 @@ var ReactZeroClipboard = react.createClass({
         text     != null && client.setText(text);
     },
     render: function(){
-        var span = react.createFactory ? react.createFactory('span') : react.DOM.span;
-        return span({
-            className: this.props.className || '',
-            style: {cursor: "pointer"}
-        }, this.props.children);
+        return react.Children.only(this.props.children);
     }
 });
 module.exports = ReactZeroClipboard;

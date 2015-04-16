@@ -3,19 +3,19 @@ var React = require('react');
 var ReactZeroClipboard = require('./');
 
 var npmInstallCommand = "npm install react-zeroclipboard";
-npmInstallLink = React.createClass({
+NpmInstallLink = React.createClass({
     render: function(){
         return (
         <div className="input-group">
             <input className="form-control input-lg" value={npmInstallCommand} />      
-            <ReactZeroClipboard text={npmInstallCommand} className="input-group-addon">
-                Copy
+            <ReactZeroClipboard text={npmInstallCommand}>
+                <span className="input-group-addon" style={{cursor: 'pointer'}}>Copy</span>
             </ReactZeroClipboard>
         </div>
         );
     }
 });
-React.renderComponent(npmInstallLink(), document.getElementById("npm-install-link-target"));
+React.render(<NpmInstallLink />, document.getElementById("npm-install-link-target"));
 
 
 
@@ -23,7 +23,7 @@ var list = [
     "apples", "oranges", "bananas"
 ];
 
-var multiTypeDemo = React.createClass({
+var MultiTypeDemo = React.createClass({
     getText: function(){
         return list.map(function(x){ return "- " + x }).join("\n");
     },
@@ -60,9 +60,9 @@ var multiTypeDemo = React.createClass({
 
 
 
-React.renderComponent(multiTypeDemo(), document.getElementById("list-demo-target"));
+React.render(<MultiTypeDemo />, document.getElementById("list-demo-target"));
 
-var eventsDemo = React.createClass({
+var EventsDemo = React.createClass({
     getInitialState: function(){
         return {
             logs: [],
@@ -88,7 +88,9 @@ var eventsDemo = React.createClass({
                 onAfterCopy={this.getLogger("afterCopy")}
                 onError={this.getLogger("error")}
                 onReady={this.getLogger("ready")}
-                >Click To Copy</ReactZeroClipboard></div>
+                >
+                    <span>Click To Copy</span>
+                </ReactZeroClipboard></div>
             <div style={styl}><ol>{this.state.logs.map(function(log, i){
                 var out = {};
                 
@@ -109,4 +111,4 @@ var eventsDemo = React.createClass({
     }
 });
 
-React.renderComponent(eventsDemo(), document.getElementById("events-demo-target"));
+React.render(<EventsDemo />, document.getElementById("events-demo-target"));

@@ -18,9 +18,10 @@
   "author": "Frankie Bagnardi <f.bagnardi@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "browserify": "^5.9.1",
-    "react": "^0.11.1",
-    "reactify": "^0.14.0"
+    "browserify": "^9.0.8",
+    "envify": "^3.4.0",
+    "react": "^0.13.1",
+    "reactify": "^1.1.0"
   },
   "browserify": {
     "transform": [
@@ -28,6 +29,6 @@
     ]
   },
   "dependencies": {
-    "envify": "^3.3.0"
+    "envify": "^3"
   }
 }
