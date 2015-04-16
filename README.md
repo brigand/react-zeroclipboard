@@ -11,9 +11,13 @@ which is being abstracted from you.  This library...
 
 ### Install
 
-This is only available through npm, it should work with browserify or webpack.  
+This is only available through npm, it should work with browserify or webpack.  It's compatible with react 0.13.
 
-   npm install --save react-zeroclipboard
+   npm install --save react-zeroclipboard@1
+
+Or for react 0.11 and 0.12
+
+   npm install --save react-zeroclipboard@0.4
 
 Also install react if you haven't already (of course).
 
