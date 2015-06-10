@@ -4,6 +4,7 @@ var ZeroClipboard, client;
 
 // callbacks waiting for ZeroClipboard to load
 var waitingForScriptToLoad = [];
+var scriptLoaded = false;
 
 // these are the active elements using ZeroClipboardComponent
 // each item in the array should be a [element, callback] pair
@@ -38,15 +39,7 @@ var propToEvent = {
 
 var readyEventHasHappened = false;
 
-// asynchronusly load ZeroClipboard from cdnjs
-// it should automatically discover the SWF location using some clever hacks :-)
-var handleZeroClipLoad = function(error){
-    if (error) {
-        console.error("Couldn't load zeroclipboard from CDNJS.  Copy will not work.  "
-            + "Check your Content-Security-Policy.");
-        console.error(error);
-    }
-
+var setupZeroClipboardClient = function(){
     // grab it and free up the global
     ZeroClipboard = global.ZeroClipboard;
     delete global.ZeroClipboard;
@@ -82,25 +75,37 @@ var handleZeroClipLoad = function(error){
     for (var eventName in eventHandlers) {
         handleEvent(eventName);
     }
+};
 
-    // call the callbacks when ZeroClipboard is ready
-    // these are set in ReactZeroClipboard::componentDidMount
-    waitingForScriptToLoad.forEach(function(callback){
-        callback();
-    });
+// asynchronusly load ZeroClipboard from cdnjs
+// it should automatically discover the SWF location using some clever hacks :-)
+var zeroClipboardOnLoad = function(error){
+  if (error) {
+      console.error("Couldn't load zeroclipboard from CDNJS.  Copy will not work.  "
+          + "Check your Content-Security-Policy.");
+      console.error(error);
+  }
+
+  scriptLoaded = true;
+
+  // call the callbacks when ZeroClipboard is ready
+  // these are set in ReactZeroClipboard::componentDidMount
+  waitingForScriptToLoad.forEach(function(callback){
+      callback();
+  });
 };
 
 if (global.ZeroClipboard) {
-    handleZeroClipLoad(null);
+    zeroClipboardOnLoad(null);
 }
 else {
     // load zeroclipboard from CDN
     // in production we want the minified version
     var ZERO_CLIPBOARD_SOURCE = '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard';
-    loadScript(process.env.NODE_ENV === 'production' ? ZERO_CLIPBOARD_SOURCE + '.min.js' : ZERO_CLIPBOARD_SOURCE + '.js', handleZeroClipLoad);
+    loadScript(process.env.NODE_ENV === 'production' ? ZERO_CLIPBOARD_SOURCE + '.min.js' : ZERO_CLIPBOARD_SOURCE + '.js', zeroClipboardOnLoad);
 }
 
-// <ReactZeroClipboard 
+// <ReactZeroClipboard
 //   text="text to copy"
 //   html="<b>html to copy</b>"
 //   richText="{\\rtf1\\ansi\n{\\b rich text to copy}}"
@@ -116,12 +121,20 @@ else {
 // />
 var ReactZeroClipboard = react.createClass({
     ready: function(cb){
-        if (client) {
-            // nextTick guarentees asynchronus execution
-            process.nextTick(cb.bind(this));
+        var self = this;
+
+        var onLoad = function(){
+            if (!client) {
+                setupZeroClipboardClient();
+            }
+            cb.call(self);
         }
-        else {
-            waitingForScriptToLoad.push(cb.bind(this));
+
+        if (scriptLoaded) {
+            // nextTick guarentees asynchronus execution
+            process.nextTick(onLoad);
+        } else {
+            waitingForScriptToLoad.push(onLoad);
         }
     },
     componentWillMount: function(){
