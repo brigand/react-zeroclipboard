@@ -1,4 +1,5 @@
 var react = require('react');
+var domready = require('domready');
 var loadScript = require('./loadScript');
 var ZeroClipboard, client;
 
@@ -47,46 +48,49 @@ var handleZeroClipLoad = function(error){
         console.error(error);
     }
 
-    // grab it and free up the global
-    ZeroClipboard = global.ZeroClipboard;
-    delete global.ZeroClipboard;
+    domready(function () {
+        // grab it and free up the global
+        ZeroClipboard = global.ZeroClipboard;
+        delete global.ZeroClipboard;
 
-    client = new ZeroClipboard();
+        client = new ZeroClipboard();
 
-    var handleEvent = function(eventName){
-        client.on(eventName, function(event){
-            // ready has no active element
-            if (eventName === 'ready') {
-                eventHandlers[eventName].forEach(function(xs){
-                    xs[1](event);
-                });
+        var handleEvent = function(eventName){
+            client.on(eventName, function(event){
+                // ready has no active element
+                if (eventName === 'ready') {
+                    eventHandlers[eventName].forEach(function(xs){
+                        xs[1](event);
+                    });
 
-                readyEventHasHappened = true;
-                return;
-            }
-
-            var activeElement = ZeroClipboard.activeElement();
-
-            // find an event handler for this element
-            // we use some so we don't continue looking after a match is found
-            eventHandlers[eventName].some(function(xs){
-                var element = xs[0], callback = xs[1];
-                if (element === activeElement) {
-                    callback(event);
-                    return true;
+                    readyEventHasHappened = true;
+                    return;
                 }
+
+                var activeElement = ZeroClipboard.activeElement();
+
+                // find an event handler for this element
+                // we use some so we don't continue looking after a match is found
+                eventHandlers[eventName].some(function(xs){
+                    var element = xs[0], callback = xs[1];
+                    if (element === activeElement) {
+                        callback(event);
+                        return true;
+                    }
+                });
             });
+        };
+
+
+        for (var eventName in eventHandlers) {
+            handleEvent(eventName);
+        }
+
+        // call the callbacks when ZeroClipboard is ready
+        // these are set in ReactZeroClipboard::componentDidMount
+        waitingForScriptToLoad.forEach(function(callback){
+            callback();
         });
-    };
-
-    for (var eventName in eventHandlers) {
-        handleEvent(eventName);
-    }
-
-    // call the callbacks when ZeroClipboard is ready
-    // these are set in ReactZeroClipboard::componentDidMount
-    waitingForScriptToLoad.forEach(function(callback){
-        callback();
     });
 };
 
