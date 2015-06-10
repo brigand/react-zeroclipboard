@@ -29,6 +29,7 @@
     ]
   },
   "dependencies": {
+    "domready": "^1.0.8",
     "envify": "^3"
   }
 }
