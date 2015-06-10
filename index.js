@@ -90,8 +90,6 @@ var handleZeroClipLoad = function(error){
     });
 };
 
-
-
 // <ReactZeroClipboard 
 //   text="text to copy"
 //   html="<b>html to copy</b>"
