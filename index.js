@@ -90,6 +90,22 @@ var handleZeroClipLoad = function(error){
     });
 };
 
+var findOrLoadWasCalled = false;
+function findOrLoadZeroClipboard(){
+    if (findOrLoadWasCalled) return;
+    findOrLoadWasCalled = true;
+
+    if (global.ZeroClipboard) {
+        handleZeroClipLoad(null);
+    }
+    else {
+        // load zeroclipboard from CDN
+        // in production we want the minified version
+        var ZERO_CLIPBOARD_SOURCE = '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard';
+        loadScript(process.env.NODE_ENV === 'production' ? ZERO_CLIPBOARD_SOURCE + '.min.js' : ZERO_CLIPBOARD_SOURCE + '.js', handleZeroClipLoad);
+    }
+}
+
 // <ReactZeroClipboard 
 //   text="text to copy"
 //   html="<b>html to copy</b>"
@@ -106,6 +122,8 @@ var handleZeroClipLoad = function(error){
 // />
 var ReactZeroClipboard = react.createClass({
     ready: function(cb){
+        findOrLoadZeroClipboard();
+
         if (client) {
             // nextTick guarentees asynchronus execution
             process.nextTick(cb.bind(this));
@@ -120,16 +138,6 @@ var ReactZeroClipboard = react.createClass({
         }
     },
     componentDidMount: function(){
-        if (global.ZeroClipboard) {
-            handleZeroClipLoad(null);
-        }
-        else {
-            // load zeroclipboard from CDN
-            // in production we want the minified version
-            var ZERO_CLIPBOARD_SOURCE = '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard';
-            loadScript(process.env.NODE_ENV === 'production' ? ZERO_CLIPBOARD_SOURCE + '.min.js' : ZERO_CLIPBOARD_SOURCE + '.js', handleZeroClipLoad);
-        }
-                
         // wait for ZeroClipboard to be ready, and then bind it to our element
         this.eventRemovers = [];
         this.ready(function(){
@@ -167,7 +175,7 @@ var ReactZeroClipboard = react.createClass({
         var text = result(p.getText || p.text);
         var html = result(p.getHtml || p.html);
         var richText = result(p.getRichText || p.richText);
-        
+
         // give ourselves a fresh slate and then set
         // any provided data types
         client.clearData();
