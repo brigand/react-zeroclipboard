@@ -34,5 +34,5 @@ module.exports = function loadScript(src, callback){
     // I believe async is true by default, but there's no harm in setting it
     script.async = true;
     script.src = src;
-    document.head.appendChild(script);
+    document.getElementsByTagName("head")[0].appendChild(script);
 };

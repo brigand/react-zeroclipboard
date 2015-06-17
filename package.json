@@ -1,6 +1,6 @@
 {
   "name": "react-zeroclipboard",
-  "version": "2.0.0",
+  "version": "2.0.1-pre",
   "description": "react component for zeroclipboard",
   "main": "index.js",
   "keywords": [
