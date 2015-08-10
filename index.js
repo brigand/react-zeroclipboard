@@ -1,4 +1,5 @@
-var react = require('react');
+var React = require('react');
+var ReactDOM = require('react-dom');
 var loadScript = require('./loadScript');
 var ZeroClipboard, client;
 
@@ -120,7 +121,7 @@ function findOrLoadZeroClipboard(){
 //
 //   onReady={(Event -> Void)}
 // />
-var ReactZeroClipboard = react.createClass({
+var ReactZeroClipboard = React.createClass({
     ready: function(cb){
         findOrLoadZeroClipboard();
 
@@ -142,7 +143,7 @@ var ReactZeroClipboard = react.createClass({
         this.eventRemovers = [];
         this.ready(function(){
             if (!this.isMounted()) return;
-            var el = react.findDOMNode(this);
+            var el = ReactDOM.findDOMNode(this);
             client.clip(el);
 
             // translate our props to ZeroClipboard events, and add them to
@@ -184,7 +185,7 @@ var ReactZeroClipboard = react.createClass({
         text     != null && client.setText(text);
     },
     render: function(){
-        return react.Children.only(this.props.children);
+        return React.Children.only(this.props.children);
     }
 });
 module.exports = ReactZeroClipboard;
