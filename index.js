@@ -163,7 +163,7 @@ var ReactZeroClipboard = React.createClass({
     },
     componentWillUnmount: function(){
         if (client) {
-            client.unclip(this.getDOMNode());
+            client.unclip(ReactDOM.findDOMNode(this));
         }
 
         // remove our event listener
