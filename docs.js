@@ -1,7 +1,7 @@
-/** @jsx React.DOM */
 var React = require('react');
+var ReactDOM = require('react-dom');
 var ReactZeroClipboard = require('./');
-
+window.d = ReactDOM;
 var npmInstallCommand = "npm install react-zeroclipboard";
 NpmInstallLink = React.createClass({
     render: function(){
@@ -15,7 +15,7 @@ NpmInstallLink = React.createClass({
         );
     }
 });
-React.render(<NpmInstallLink />, document.getElementById("npm-install-link-target"));
+ReactDOM.render(<NpmInstallLink />, document.getElementById("npm-install-link-target"));
 
 
 
@@ -60,7 +60,7 @@ var MultiTypeDemo = React.createClass({
 
 
 
-React.render(<MultiTypeDemo />, document.getElementById("list-demo-target"));
+ReactDOM.render(<MultiTypeDemo />, document.getElementById("list-demo-target"));
 
 var EventsDemo = React.createClass({
     getInitialState: function(){
@@ -111,4 +111,4 @@ var EventsDemo = React.createClass({
     }
 });
 
-React.render(<EventsDemo />, document.getElementById("events-demo-target"));
+ReactDOM.render(<EventsDemo />, document.getElementById("events-demo-target"));
