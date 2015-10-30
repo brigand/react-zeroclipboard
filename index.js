@@ -1,4 +1,5 @@
-var react = require('react');
+var React = require('react');
+var ReactDOM = require('react-dom');
 var loadScript = require('./loadScript');
 var ZeroClipboard, client;
 
@@ -10,7 +11,8 @@ var waitingForScriptToLoad = [];
 var eventHandlers = {
     copy: [],
     afterCopy: [],
-    error: []
+    error: [],
+    ready: []
 };
 
 // add a listener, and returns a remover
@@ -31,8 +33,11 @@ var addZeroListener = function(event, el, fn){
 var propToEvent = {
     onCopy: 'copy',
     onAfterCopy: 'afterCopy',
-    onError: 'error'
+    onError: 'error',
+    onReady: 'ready'
 };
+
+var readyEventHasHappened = false;
 
 // asynchronusly load ZeroClipboard from cdnjs
 // it should automatically discover the SWF location using some clever hacks :-)
@@ -47,10 +52,24 @@ var handleZeroClipLoad = function(error){
     ZeroClipboard = global.ZeroClipboard;
     delete global.ZeroClipboard;
 
+    ZeroClipboard.config({
+      swfPath: '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.swf'
+    });
+
     client = new ZeroClipboard();
 
     var handleEvent = function(eventName){
         client.on(eventName, function(event){
+            // ready has no active element
+            if (eventName === 'ready') {
+                eventHandlers[eventName].forEach(function(xs){
+                    xs[1](event);
+                });
+
+                readyEventHasHappened = true;
+                return;
+            }
+
             var activeElement = ZeroClipboard.activeElement();
 
             // find an event handler for this element
@@ -76,11 +95,20 @@ var handleZeroClipLoad = function(error){
     });
 };
 
-if (global.ZeroClipboard) {
-    handleZeroClipLoad(null);
-}
-else {
-    loadScript('//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.5/ZeroClipboard.js', handleZeroClipLoad);
+var findOrLoadWasCalled = false;
+function findOrLoadZeroClipboard(){
+    if (findOrLoadWasCalled) return;
+    findOrLoadWasCalled = true;
+
+    if (global.ZeroClipboard) {
+        handleZeroClipLoad(null);
+    }
+    else {
+        // load zeroclipboard from CDN
+        // in production we want the minified version
+        var ZERO_CLIPBOARD_SOURCE = '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard';
+        loadScript(process.env.NODE_ENV === 'production' ? ZERO_CLIPBOARD_SOURCE + '.min.js' : ZERO_CLIPBOARD_SOURCE + '.js', handleZeroClipLoad);
+    }
 }
 
 // <ReactZeroClipboard 
@@ -97,8 +125,10 @@ else {
 //
 //   onReady={(Event -> Void)}
 // />
-var ReactZeroClipboard = react.createClass({
+var ReactZeroClipboard = React.createClass({
     ready: function(cb){
+        findOrLoadZeroClipboard();
+
         if (client) {
             // nextTick guarentees asynchronus execution
             process.nextTick(cb.bind(this));
@@ -107,11 +137,17 @@ var ReactZeroClipboard = react.createClass({
             waitingForScriptToLoad.push(cb.bind(this));
         }
     },
+    componentWillMount: function(){
+        if (readyEventHasHappened && this.props.onReady) {
+            this.props.onReady();
+        }
+    },
     componentDidMount: function(){
         // wait for ZeroClipboard to be ready, and then bind it to our element
         this.eventRemovers = [];
         this.ready(function(){
-            var el = this.getDOMNode();
+            if (!this.isMounted()) return;
+            var el = ReactDOM.findDOMNode(this);
             client.clip(el);
 
             // translate our props to ZeroClipboard events, and add them to
@@ -127,12 +163,11 @@ var ReactZeroClipboard = react.createClass({
 
             var remover = addZeroListener("copy", el, this.handleCopy);
             this.eventRemovers.push(remover);
-            if (this.props.onReady) this.props.onReady();
         });
     },
     componentWillUnmount: function(){
         if (client) {
-            client.unclip(this.getDOMNode());
+            client.unclip(ReactDOM.findDOMNode(this));
         }
 
         // remove our event listener
@@ -145,7 +180,7 @@ var ReactZeroClipboard = react.createClass({
         var text = result(p.getText || p.text);
         var html = result(p.getHtml || p.html);
         var richText = result(p.getRichText || p.richText);
-        
+
         // give ourselves a fresh slate and then set
         // any provided data types
         client.clearData();
@@ -154,11 +189,7 @@ var ReactZeroClipboard = react.createClass({
         text     != null && client.setText(text);
     },
     render: function(){
-        var span = react.createFactory ? react.createFactory('span') : react.DOM.span;
-        return span({
-            className: this.props.className || '',
-            style: {cursor: "pointer"}
-        }, this.props.children);
+        return React.Children.only(this.props.children);
     }
 });
 module.exports = ReactZeroClipboard;

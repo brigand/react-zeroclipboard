@@ -1,21 +1,21 @@
-/** @jsx React.DOM */
 var React = require('react');
+var ReactDOM = require('react-dom');
 var ReactZeroClipboard = require('./');
-
+window.d = ReactDOM;
 var npmInstallCommand = "npm install react-zeroclipboard";
-npmInstallLink = React.createClass({
+NpmInstallLink = React.createClass({
     render: function(){
         return (
         <div className="input-group">
             <input className="form-control input-lg" value={npmInstallCommand} />      
-            <ReactZeroClipboard text={npmInstallCommand} className="input-group-addon">
-                Copy
+            <ReactZeroClipboard text={npmInstallCommand}>
+                <span className="input-group-addon" style={{cursor: 'pointer'}}>Copy</span>
             </ReactZeroClipboard>
         </div>
         );
     }
 });
-React.renderComponent(npmInstallLink(), document.getElementById("npm-install-link-target"));
+ReactDOM.render(<NpmInstallLink />, document.getElementById("npm-install-link-target"));
 
 
 
@@ -23,7 +23,7 @@ var list = [
     "apples", "oranges", "bananas"
 ];
 
-var multiTypeDemo = React.createClass({
+var MultiTypeDemo = React.createClass({
     getText: function(){
         return list.map(function(x){ return "- " + x }).join("\n");
     },
@@ -60,9 +60,9 @@ var multiTypeDemo = React.createClass({
 
 
 
-React.renderComponent(multiTypeDemo(), document.getElementById("list-demo-target"));
+ReactDOM.render(<MultiTypeDemo />, document.getElementById("list-demo-target"));
 
-var eventsDemo = React.createClass({
+var EventsDemo = React.createClass({
     getInitialState: function(){
         return {
             logs: [],
@@ -86,12 +86,21 @@ var eventsDemo = React.createClass({
             <div><ReactZeroClipboard text="example text" 
                 onCopy={this.getLogger("copy")}
                 onAfterCopy={this.getLogger("afterCopy")}
-                error={this.getLogger("error")}>Click To Copy</ReactZeroClipboard></div>
+                onError={this.getLogger("error")}
+                onReady={this.getLogger("ready")}
+                >
+                    <span>Click To Copy</span>
+                </ReactZeroClipboard></div>
             <div style={styl}><ol>{this.state.logs.map(function(log, i){
                 var out = {};
                 
                 for (var key in log.event) {
-                    out[key] = String(log.event[key]);
+                    if (log.event[key] instanceof window.Element) {
+                        out[key] = String(log.event[key]);
+                    }
+                    else {
+                        out[key] = log.event[key];
+                    }
                 }
 
 
@@ -102,4 +111,4 @@ var eventsDemo = React.createClass({
     }
 });
 
-React.renderComponent(eventsDemo(), document.getElementById("events-demo-target"));
+ReactDOM.render(<EventsDemo />, document.getElementById("events-demo-target"));
