@@ -15,6 +15,14 @@ var eventHandlers = {
     ready: []
 };
 
+var ZERO_CLIPBOARD_SOURCE = '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard';
+var globalConfig = {
+    swfPath: '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.swf',
+    // load zeroclipboard from CDN
+    // in production we want the minified version
+    jsPath: process.env.NODE_ENV === 'production' ? ZERO_CLIPBOARD_SOURCE + '.min.js' : ZERO_CLIPBOARD_SOURCE + '.js'
+};
+
 // add a listener, and returns a remover
 var addZeroListener = function(event, el, fn){
     eventHandlers[event].push([el, fn]);
@@ -53,7 +61,7 @@ var handleZeroClipLoad = function(error){
     delete global.ZeroClipboard;
 
     ZeroClipboard.config({
-      swfPath: '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.swf'
+        swfPath: globalConfig.swfPath
     });
 
     client = new ZeroClipboard();
@@ -104,14 +112,11 @@ function findOrLoadZeroClipboard(){
         handleZeroClipLoad(null);
     }
     else {
-        // load zeroclipboard from CDN
-        // in production we want the minified version
-        var ZERO_CLIPBOARD_SOURCE = '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard';
-        loadScript(process.env.NODE_ENV === 'production' ? ZERO_CLIPBOARD_SOURCE + '.min.js' : ZERO_CLIPBOARD_SOURCE + '.js', handleZeroClipLoad);
+        loadScript(globalConfig.jsPath, handleZeroClipLoad);
     }
 }
 
-// <ReactZeroClipboard 
+// <ReactZeroClipboard
 //   text="text to copy"
 //   html="<b>html to copy</b>"
 //   richText="{\\rtf1\\ansi\n{\\b rich text to copy}}"
@@ -192,6 +197,9 @@ var ReactZeroClipboard = React.createClass({
         return React.Children.only(this.props.children);
     }
 });
+
+ReactZeroClipboard.globalConfig = globalConfig;
+
 module.exports = ReactZeroClipboard;
 
 function result(fnOrValue) {
