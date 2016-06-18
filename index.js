@@ -116,10 +116,15 @@ function findOrLoadZeroClipboard(){
     }
 }
 
+function setUserDefinedSwfPath(path){
+  globalConfig = Object.assign(globalConfig, {swfPath: path})
+}
+
 // <ReactZeroClipboard
 //   text="text to copy"
 //   html="<b>html to copy</b>"
 //   richText="{\\rtf1\\ansi\n{\\b rich text to copy}}"
+//   swfPath="http://user_defined_cdn_path/ZeroClipboard.swf"
 //   getText={(Void -> String)}
 //   getHtml={(Void -> String)}
 //   getRichText={(Void -> String)}
@@ -132,6 +137,10 @@ function findOrLoadZeroClipboard(){
 // />
 var ReactZeroClipboard = React.createClass({
     ready: function(cb){
+        if (null != this.props.swfPath) {
+          setUserDefinedSwfPath(this.props.swfPath);
+        }
+
         findOrLoadZeroClipboard();
 
         if (client) {
