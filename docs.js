@@ -3,12 +3,16 @@ var ReactDOM = require('react-dom');
 var ReactZeroClipboard = require('./');
 window.d = ReactDOM;
 var npmInstallCommand = "npm install react-zeroclipboard";
+var zclipProps = {
+  swfPath: './assets/ZeroClipboard.swf'
+};
+
 NpmInstallLink = React.createClass({
     render: function(){
         return (
         <div className="input-group">
             <input className="form-control input-lg" value={npmInstallCommand} />      
-            <ReactZeroClipboard text={npmInstallCommand}>
+            <ReactZeroClipboard text={npmInstallCommand} {...zclipProps}>
                 <span className="input-group-addon" style={{cursor: 'pointer'}}>Copy</span>
             </ReactZeroClipboard>
         </div>
@@ -42,7 +46,7 @@ var MultiTypeDemo = React.createClass({
     render: function(){
         return (
         <div>
-            <ReactZeroClipboard getText={this.getText} getHtml={this.getHtml}>
+            <ReactZeroClipboard getText={this.getText} getHtml={this.getHtml} {...zclipProps}>
                 <div className="btn">Copy List</div>
             </ReactZeroClipboard>
             <div className="row">
@@ -88,6 +92,7 @@ var EventsDemo = React.createClass({
                 onAfterCopy={this.getLogger("afterCopy")}
                 onError={this.getLogger("error")}
                 onReady={this.getLogger("ready")}
+                {...zclipProps}
                 >
                     <span>Click To Copy</span>
                 </ReactZeroClipboard></div>
