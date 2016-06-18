@@ -60,6 +60,9 @@ the literal strings, if for some reason you pass both.
    onErrorCopy={(Error -> Void)}
 
    onReady={(Event -> Void)}
+
+   // optional
+   swfPath="http://user_defined_cdn_path/ZeroClipboard.swf"
 />
 ```
 

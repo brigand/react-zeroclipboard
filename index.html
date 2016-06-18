@@ -54,10 +54,11 @@
    text="text to copy"
    html="&lt;b>html to copy&lt;/b>"
    richText="{\\rtf1\\ansi\n{\\b rich text to copy}}"
+   // optional 
+   swfPath="http://user_defined_cdn_path/ZeroClipboard.swf"
    getText={(Void -> String)}
    getHtml={(Void -> String)}
    getRichText={(Void -> String)}
-
    onCopy={(Event -> Void)}
    onAfterCopy={(Event -> Void)}
    onErrorCopy={(Error -> Void)}
