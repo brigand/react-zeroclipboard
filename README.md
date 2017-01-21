@@ -84,3 +84,24 @@ render: function(){
    )
 }
 ```
+
+## I'm getting weird ZeroClipboard errors
+
+Usually this is caused by flash weirdness and/or cdnjs where we pull ZeroClipboard from. You can work around this
+by hosting ZeroClipboard and the swf yourself. Make sure the page and the two assets are either both http, or both
+https. There's a copy of the swf in the assets directory of this repo.
+
+To access it with webpack, configure a loader for swf files:
+
+```js
+{
+  test: /\.swf$/g,
+  loader: 'file-loader'
+}
+```
+
+And then import the swf from this package.
+
+```jsx
+<ReactZeroClipboard swfPath={ require('react-zeroclipboard/assets/ZeroClipboard.swf') }>
+```
