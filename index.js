@@ -145,7 +145,13 @@ var ReactZeroClipboard = React.createClass({
 
         if (client) {
             // nextTick guarentees asynchronus execution
-            process.nextTick(cb.bind(this));
+            if (typeof process !== 'undefined' && process.nextTick) {
+              process.nextTick(cb.bind(this));
+            } else if (typeof setImmediate === 'function') {
+              setImmediate(cb.bind(this));
+            } else {
+              setTimeout(cb.bind(this), 0);
+            }
         }
         else {
             waitingForScriptToLoad.push(cb.bind(this));
