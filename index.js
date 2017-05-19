@@ -97,10 +97,12 @@ var handleZeroClipLoad = function(error){
         handleEvent(eventName);
     }
 
-    // call the callbacks when ZeroClipboard is ready
-    // these are set in ReactZeroClipboard::componentDidMount
-    waitingForScriptToLoad.forEach(function(callback){
-        callback();
+    client.on("ready", function() {
+        // call the callbacks when ZeroClipboard is ready
+        // these are set in ReactZeroClipboard::componentDidMount
+        waitingForScriptToLoad.forEach(function(callback){
+            callback();
+        });
     });
 };
 
