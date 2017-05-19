@@ -1,6 +1,6 @@
 {
   "name": "react-zeroclipboard",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "description": "react component for zeroclipboard",
   "main": "index.js",
   "keywords": [
@@ -32,6 +32,7 @@
     ]
   },
   "dependencies": {
+    "create-react-class": "^15.5.3",
     "envify": "^3"
   }
 }

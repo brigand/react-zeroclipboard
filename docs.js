@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var ReactDOM = require('react-dom');
 var ReactZeroClipboard = require('./');
 window.d = ReactDOM;
@@ -7,7 +8,7 @@ var zclipProps = {
   swfPath: './assets/ZeroClipboard.swf'
 };
 
-NpmInstallLink = React.createClass({
+NpmInstallLink = createReactClass({
     render: function(){
         return (
         <div className="input-group">
@@ -27,7 +28,7 @@ var list = [
     "apples", "oranges", "bananas"
 ];
 
-var MultiTypeDemo = React.createClass({
+var MultiTypeDemo = createReactClass({
     getText: function(){
         return list.map(function(x){ return "- " + x }).join("\n");
     },
@@ -66,7 +67,7 @@ var MultiTypeDemo = React.createClass({
 
 ReactDOM.render(<MultiTypeDemo />, document.getElementById("list-demo-target"));
 
-var EventsDemo = React.createClass({
+var EventsDemo = createReactClass({
     getInitialState: function(){
         return {
             logs: [],

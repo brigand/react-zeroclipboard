@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var ReactDOM = require('react-dom');
 var loadScript = require('./loadScript');
 var ZeroClipboard, client;
@@ -135,7 +136,7 @@ function setUserDefinedSwfPath(path){
 //
 //   onReady={(Event -> Void)}
 // />
-var ReactZeroClipboard = React.createClass({
+var ReactZeroClipboard = createReactClass({
     ready: function(cb){
         if (null != this.props.swfPath) {
           setUserDefinedSwfPath(this.props.swfPath);
