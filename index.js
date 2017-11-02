@@ -167,7 +167,7 @@ var ReactZeroClipboard = createReactClass({
         // wait for ZeroClipboard to be ready, and then bind it to our element
         this.eventRemovers = [];
         this.ready(function(){
-            if (!this.isMounted()) return;
+            if (this.didUnmount) return;
             var el = ReactDOM.findDOMNode(this);
             client.clip(el);
 
@@ -187,6 +187,7 @@ var ReactZeroClipboard = createReactClass({
         });
     },
     componentWillUnmount: function(){
+        this.didUnmount = true;
         if (client) {
             client.unclip(ReactDOM.findDOMNode(this));
         }
