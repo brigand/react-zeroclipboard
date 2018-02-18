@@ -9,6 +9,12 @@ which is being abstracted from you.  This library...
 *   figures out which element was clicked
 *   allows you to declare text/html/rtf, or pass a function which returns it dynamically
 
+## Warning!
+
+zero-clipboard uses flash which is being phased out across many browsers, and is sometimes buggy in the browsers that do support it. There have been reports of the plugin randomly not working, despite no significant changes to the plugin, and keeping the same zero-clipboard version.
+
+If you're interested in solving this, your help is very much appreciated, and this section will be replaced with a big "thank you" for your work. Until then, using this plugin isn't recommended.
+
 ### Install
 
 This is only available through npm, it should work with browserify or webpack.  It's compatible with react 0.13 and up.
